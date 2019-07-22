@@ -1,0 +1,5 @@
+scheme: https
+ambientePre: console.openshift-311.lab
+ambientePro: console.openshift-311.lab
+username: admin
+password: admin123
