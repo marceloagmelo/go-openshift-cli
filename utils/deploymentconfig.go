@@ -9,7 +9,7 @@ import (
 )
 
 // GetDeploymentConfig recuperar DC
-func GetDeploymentConfig(token string, url string, projeto string, nome string) (resultado int, dc model.Dc) {
+func GetDeploymentConfig(token string, url string, projeto string, nome string) (resultado int, dc model.DeploymentConfig) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs/" + nome
 
@@ -58,7 +58,7 @@ func GetDeploymentConfigString(token string, url string, projeto string, nome st
 }
 
 // ListDeploymentConfig listar todos deploymentconfig
-func ListDeploymentConfig(token string, url string) (resultado int, dcs model.Dcs) {
+func ListDeploymentConfig(token string, url string) (resultado int, dcs model.DeploymentConfigs) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
@@ -101,7 +101,7 @@ func ListDeploymentConfigString(token string, url string) (resultado int, dcsStr
 }
 
 // ListDeploymentConfigProjeto listar deploymentconfig por projetos
-func ListDeploymentConfigProjeto(token string, url string, projeto string) (resultado int, dcs model.Dcs) {
+func ListDeploymentConfigProjeto(token string, url string, projeto string) (resultado int, dcs model.DeploymentConfigs) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
@@ -112,7 +112,7 @@ func ListDeploymentConfigProjeto(token string, url string, projeto string) (resu
 			fmt.Println("[ListDeploymentConfigProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
-		dcs = model.Dcs{}
+		dcs = model.DeploymentConfigs{}
 		err = json.Unmarshal(corpo, &dcs)
 		if err != nil {
 			fmt.Println("[ListDeploymentConfigProjeto] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
@@ -125,6 +125,6 @@ func ListDeploymentConfigProjeto(token string, url string, projeto string) (resu
 }
 
 // GetDeploymentConfigImage recuperar DC
-func GetDeploymentConfigImage(dc model.Dc) string {
+func GetDeploymentConfigImage(dc model.DeploymentConfig) string {
 	return dc.Spec.Template.Spec.Containers[0].Image
 }
