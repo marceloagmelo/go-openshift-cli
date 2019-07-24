@@ -9,18 +9,18 @@ import (
 )
 
 func main() {
-	url := utils.URLGen("pre")
+	url := os.Getenv("OPENSHIFT_URL")
 	token := utils.GetToken(url)
 	//resultado, dcs := utils.ListDeploymentConfigProjeto(token, url, "teste-01")
 	resultado, dcs := utils.ListDeploymentConfig(token, url)
-	os.Mkdir("/home/marcelo/jsons", 0700)
-	os.Mkdir("/home/marcelo/jsons/teste", 0700)
+	//os.Mkdir("/home/marcelo/jsons", 0700)
+	//os.Mkdir("/home/marcelo/jsons/teste", 0700)
 	if resultado == 0 {
 		for i := 0; i < len(dcs.Items); i++ {
 			//arquivo := "/home/marcelo/jsons/teste/" + dcs.Items[i].Metadata.Name + ".json"
 			//arquivo := "/home/marcelo/jsons/teste/teste.json"
 			fmt.Printf("Dc: %+v\r\n", dcs.Items[i].Metadata.Name)
-			//fmt.Printf("Dc: %+v\r\n", dcs.Items[i])
+			//fmt.Printf("Dc: %+v\r\n", dcs)
 			//salvarAquivo(arquivo, fmt.Sprintf("%+v", dcs.Items[i]))
 			//lerDc(token, dcs.Items[i].Metadata.Namespace, dcs.Items[i].Metadata.Name)
 		}

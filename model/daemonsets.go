@@ -114,12 +114,6 @@ type DaemonSets struct {
 					SchedulerName string `json:"schedulerName"`
 				} `json:"spec"`
 			} `json:"template"`
-			UpdateStrategy struct {
-				Type          string `json:"type"`
-				RollingUpdate struct {
-					MaxUnavailable int `json:"maxUnavailable"`
-				} `json:"rollingUpdate"`
-			} `json:"updateStrategy"`
 			TemplateGeneration   int `json:"templateGeneration"`
 			RevisionHistoryLimit int `json:"revisionHistoryLimit"`
 		} `json:"spec"`

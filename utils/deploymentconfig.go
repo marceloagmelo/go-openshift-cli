@@ -23,7 +23,7 @@ func GetDeploymentConfig(token string, url string, projeto string, nome string) 
 			fmt.Println("[GetDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
-		dc = model.Dc{}
+		dc = model.DeploymentConfig{}
 		err = json.Unmarshal(corpo, &dc)
 		if err != nil {
 			fmt.Println("[GetDeploymentConfig] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
@@ -39,8 +39,6 @@ func GetDeploymentConfig(token string, url string, projeto string, nome string) 
 func GetDeploymentConfigString(token string, url string, projeto string, nome string) (resultado int, dcString string) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs/" + nome
-
-	fmt.Println("[endpoint] Erro ao ler o conteudo da pagina. Erro: ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -61,6 +59,7 @@ func GetDeploymentConfigString(token string, url string, projeto string, nome st
 func ListDeploymentConfig(token string, url string) (resultado int, dcs model.DeploymentConfigs) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "deploymentconfigs"
+
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -69,7 +68,7 @@ func ListDeploymentConfig(token string, url string) (resultado int, dcs model.De
 			fmt.Println("[ListDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
-		dcs = model.Dcs{}
+		dcs = model.DeploymentConfigs{}
 		err = json.Unmarshal(corpo, &dcs)
 		if err != nil {
 			fmt.Println("[ListDeploymentConfig] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())

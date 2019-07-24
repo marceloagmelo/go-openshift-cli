@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	url := utils.URLGen("dev")
+	url := os.Getenv("OPENSHIFT_URL")
 	token := utils.GetToken(url)
 
 	resultado, dcs := utils.ListDc(token, url)

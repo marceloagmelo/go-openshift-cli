@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/marceloagmelo/go-openshift-cli/utils"
 )
 
 func main() {
-	url := utils.URLGen("pre")
+	url := os.Getenv("OPENSHIFT_URL") //utils.URLGen("pre")
 	token := utils.GetToken(url)
 
-	resultado, dc := utils.GetDeploymentConfigString(token, url, "teste-01", "nodemysql")
+	resultado, dc := utils.GetDeploymentConfigString(token, url, "default", "docker-registry")
 	if resultado > 0 {
 		fmt.Println("[main] O dc debug não encontrado em ", url)
 		return

@@ -6,13 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/marceloagmelo/go-openshift-cli/model"
-	yaml "gopkg.in/yaml.v2"
 )
 
 //var configfile = "/home/marcelo/go/src/gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/conf/config.yaml"
@@ -22,90 +20,23 @@ var apiPods = "/api/v1/pods/"
 var apiV1 = "/api/v1/"
 var apiRoutes = "/apis/route.openshift.io/v1/"
 var apisAppsv1beta1 = "/apis/apps/v1beta1/"
-var apisImageV1 = "/apis/image.openshift.io/v1"
+var apisImageV1 = "/apis/image.openshift.io/v1/"
 var apisAuthorizationOpenshiftV1 = "/apis/authorization.openshift.io/v1/"
 var apisExtensionsV1beta1 = "/apis/extensions/v1beta1/"
 var apiBuilds = "/apis/build.openshift.io/v1/"
 
-var data = `
-scheme: https
-ambientePre: console.openshift-311.lab
-ambientePro: console.openshift-311.lab
-username: admin
-password: admin123
-`
-
-type generalConfig struct {
-	Scheme      string `yaml:"scheme"`
-	AmbientePre string `yaml:"ambientePre"`
-	AmbientePro string `yaml:"ambientePro"`
-	Usuario     string `yaml:"username"`
-	Senha       string `yaml:"password"`
-}
-
-// generalConfigLoad load general configuration from conf/config.yaml
-func generalConfigLoad() (*generalConfig, error) {
-	var config generalConfig
-
-	/*dataBytes, err := ioutil.ReadFile(configfile)
-	if err != nil {
-		return nil, err
-	}*/
-	//err = yaml.Unmarshal([]byte(dataBytes), &config)
-	err := yaml.Unmarshal([]byte(data), &config)
-	if err != nil {
-		return nil, err
-	}
-
-	return &config, nil
-}
-
-// URLGen generates target URL.
-func URLGen(ambiente string) string {
-	config, err := generalConfigLoad()
-	if err != nil {
-		fmt.Println("URLGen:", err)
-		os.Exit(1)
-	}
-	url := config.Scheme + "://" + config.AmbientePre + ":8443"
-	if ambiente == "pro" {
-		url = config.Scheme + "://" + config.AmbientePro + ":8443"
-	}
-	return url
-}
-
 // GetToken recuperar Token do usuário.
-func GetToken(url string) string {
-	config, err := generalConfigLoad()
-	if err != nil {
-		fmt.Println("URLGen:", err)
-		os.Exit(1)
-	}
-
+func GetToken(url string, username string, password string) string {
 	endpoint := url + "/oauth/authorize?client_id=openshift-challenging-client&response_type=token"
 
-	cmdCurl := "curl -s -u " + config.Usuario + ":" + config.Senha + " -kI '" + endpoint + "' | grep -oP 'access_token=\\K[^&]*'"
+	cmdCurl := "curl -s -u " + username + ":" + password + " -kI '" + endpoint + "' | grep -oP 'access_token=\\K[^&]*'"
 
 	resultado, resposta := ExecCurl(cmdCurl)
 
 	if resultado > 0 {
-		fmt.Println("[GetToken] Erro ao executar o CURL.", err.Error())
+		fmt.Println("[GetToken] Erro ao executar o CURL.")
 	}
 	return resposta
-}
-
-//GetUsuarioSenha
-func GetUsuarioSenha() (usuario string, senha string) {
-	config, err := generalConfigLoad()
-	if err != nil {
-		fmt.Println("URLGen:", err)
-		os.Exit(1)
-	}
-
-	usuario = config.Usuario
-	senha = config.Senha
-
-	return usuario, senha
 }
 
 // ExecCurl execuctar CURL.

@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/marceloagmelo/go-openshift-cli/utils"
 )
 
 func main() {
-        url := utils.URLGen("pre")
-        token := utils.GetToken(url)
+	url := os.Getenv("OPENSHIFT_URL")
+	token := utils.GetToken(url)
 	resultado, projetos := utils.Namespaces(token, url)
 	if resultado == 0 {
 		for i := 0; i < len(projetos.Items); i++ {

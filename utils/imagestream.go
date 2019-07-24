@@ -59,6 +59,7 @@ func GetImageStreamString(token string, url string, projeto string, nome string)
 func ListImageStream(token string, url string) (resultado int, imageStream model.ImageStreams) {
 	//token := GetToken(url)
 	endpoint := url + apisImageV1 + "imagestreams"
+
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

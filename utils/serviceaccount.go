@@ -8,8 +8,8 @@ import (
 	"github.com/marceloagmelo/go-openshift-cli/model"
 )
 
-// getServiceAccount recuperar ServiceAccount
-func getServiceAccount(token string, url string, projeto string, nome string) (resultado int, serviceAccount model.ServiceAccount) {
+// GetServiceAccount recuperar ServiceAccount
+func GetServiceAccount(token string, url string, projeto string, nome string) (resultado int, serviceAccount model.ServiceAccount) {
 	//token := GetToken(url)
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts/" + nome
 
@@ -35,8 +35,8 @@ func getServiceAccount(token string, url string, projeto string, nome string) (r
 	return resultado, serviceAccount
 }
 
-// getServiceAccountString recuperar ServiceAccount
-func getServiceAccountString(token string, url string, projeto string, nome string) (resultado int, serviceAccountString string) {
+// GetServiceAccountString recuperar ServiceAccount
+func GetServiceAccountString(token string, url string, projeto string, nome string) (resultado int, serviceAccountString string) {
 	//token := GetToken(url)
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts/" + nome
 
@@ -56,7 +56,7 @@ func getServiceAccountString(token string, url string, projeto string, nome stri
 }
 
 // ListServiceAccount listar todos serviceaccounts
-func ListServiceAccount(token string, url string) (resultado int, serviceAccount model.ServiceAccount) {
+func ListServiceAccount(token string, url string) (resultado int, serviceAccounts model.ServiceAccounts) {
 	//token := GetToken(url)
 	endpoint := url + apiV1 + "serviceaccounts"
 	resultado, resposta := GetRequest(token, endpoint)
@@ -67,8 +67,8 @@ func ListServiceAccount(token string, url string) (resultado int, serviceAccount
 			fmt.Println("[ListServiceAccount] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
-		serviceAccount = model.ServiceAccount{}
-		err = json.Unmarshal(corpo, &serviceAccount)
+		serviceAccounts = model.ServiceAccounts{}
+		err = json.Unmarshal(corpo, &serviceAccounts)
 		if err != nil {
 			fmt.Println("[ListServiceAccount] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
 			resultado = 1
@@ -76,7 +76,7 @@ func ListServiceAccount(token string, url string) (resultado int, serviceAccount
 	} else {
 		resultado = 1
 	}
-	return resultado, serviceAccount
+	return resultado, serviceAccounts
 }
 
 // ListserviceAccountString listar todos serviceaccounts

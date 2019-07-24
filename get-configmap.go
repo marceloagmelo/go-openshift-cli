@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	url := utils.URLGen("pre")
-	token := utils.GetToken(url)
+	url := "https://console.openshift-311.lab:8443"
+	token := utils.GetToken(url, "admin", "admin123")
 
 	resultado, configmap := utils.GetConfigMapString(token, url, "teste-04", "redis-conf")
 	if resultado > 0 {

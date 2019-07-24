@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"os"
 
-	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/utils"
+	"github.com/marceloagmelo/go-openshift-cli/utils"
 )
 
 func main() {
-	url := utils.URLGen("pre")
+	url := os.Getenv("OPENSHIFT_URL") //utils.URLGen("pre")
 	token := utils.GetToken(url)
 
-	resultado, proj := utils.GetNamespace(token, url, "acb-dev")
+	resultado, proj := utils.GetNamespace(token, url, "teste-01")
 	if resultado > 0 {
 		fmt.Println("[main] O projeto solr-lfr-pre não encontrado em ", url)
 		return
