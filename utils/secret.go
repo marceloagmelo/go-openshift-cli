@@ -11,7 +11,7 @@ import (
 // GetSecret recuperar Secret
 func GetSecret(token string, url string, projeto string, nome string) (resultado int, secret model.Secret) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/secrets/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/secrets/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetSecret(token string, url string, projeto string, nome string) (resultado
 // GetSecretString recuperar Secret
 func GetSecretString(token string, url string, projeto string, nome string) (resultado int, secretString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/secrets/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/secrets/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListSecretString(token string, url string) (resultado int, secretsString st
 // ListSecretProjeto listar Secret por projetos
 func ListSecretProjeto(token string, url string, projeto string) (resultado int, secrets model.Secrets) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/secrets"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/secrets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListSecretProjeto(token string, url string, projeto string) (resultado int,
 // ListSecretProjetoString listar Secret por projetos
 func ListSecretProjetoString(token string, url string, projeto string) (resultado int, secretsString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/secrets"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/secrets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

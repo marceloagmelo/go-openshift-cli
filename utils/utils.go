@@ -17,16 +17,15 @@ import (
 
 //var configfile = "/home/marcelo/go/src/gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/conf/config.yaml"
 var apiProjeto = "/apis/project.openshift.io/v1/projects/"
-var apiNamespaces = "/api/v1/namespaces/"
-var apiNamespaceApps = "/apis/apps.openshift.io/v1/namespaces/"
 var apiApps = "/apis/apps.openshift.io/v1/"
 var apiPods = "/api/v1/pods/"
-var apiPodsNamespace = "/api/v1/namespaces/"
 var apiV1 = "/api/v1/"
 var apiRoutes = "/apis/route.openshift.io/v1/"
-var apiRoutesNamespace = "/apis/route.openshift.io/v1/namespaces/"
 var apisAppsv1beta1 = "/apis/apps/v1beta1/"
-var apisAppsv1beta1Namespace = "/apis/apps/v1beta1/namespaces/"
+var apisImageV1 = "/apis/image.openshift.io/v1"
+var apisAuthorizationOpenshiftV1 = "/apis/authorization.openshift.io/v1/"
+var apisExtensionsV1beta1 = "/apis/extensions/v1beta1/"
+var apiBuilds = "/apis/build.openshift.io/v1/"
 
 var data = `
 scheme: https

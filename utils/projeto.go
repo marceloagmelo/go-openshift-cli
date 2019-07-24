@@ -61,7 +61,7 @@ func Projetos(token string, url string) (resultado int, projetos model.Projetos)
 // GetNamespace recuperar namespace
 func GetNamespace(token string, url string, nome string) (resultado int, proj model.Projeto) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + nome
+	endpoint := url + apiV1 + "namespaces/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -86,7 +86,7 @@ func GetNamespace(token string, url string, nome string) (resultado int, proj mo
 // Namespaces listar namespaces
 func Namespaces(token string, url string) (resultado int, projetos model.Projetos) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces
+	endpoint := url + apiV1 + "namespaces/"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

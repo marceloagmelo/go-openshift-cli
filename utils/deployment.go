@@ -11,7 +11,7 @@ import (
 // GetDeployment recuperar Deployment
 func GetDeployment(token string, url string, projeto string, nome string) (resultado int, deployment model.Deployment) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/deployments/" + nome
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetDeployment(token string, url string, projeto string, nome string) (resul
 // GetDeploymentString recuperar Deployment
 func GetDeploymentString(token string, url string, projeto string, nome string) (resultado int, deploymentString string) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/deployments/" + nome
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListDeploymentString(token string, url string) (resultado int, deploymentsS
 // ListDeploymentProjeto listar Deployment por projetos
 func ListDeploymentProjeto(token string, url string, projeto string) (resultado int, deployments model.Deployments) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/deployments"
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListDeploymentProjeto(token string, url string, projeto string) (resultado 
 // ListDeploymentProjetoString listar Deployment por projetos
 func ListDeploymentProjetoString(token string, url string, projeto string) (resultado int, deploymentsString string) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/deployments"
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

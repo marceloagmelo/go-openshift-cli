@@ -11,7 +11,7 @@ import (
 // GetStateFulSet recuperar StateFulSet
 func GetStateFulSet(token string, url string, projeto string, nome string) (resultado int, statefulset model.StateFulSet) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/statefulsets/" + nome
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetStateFulSet(token string, url string, projeto string, nome string) (resu
 // GetStateFulSetString recuperar StateFulSet
 func GetStateFulSetString(token string, url string, projeto string, nome string) (resultado int, statefulsetString string) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/statefulsets/" + nome
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListStateFulSetString(token string, url string) (resultado int, statefulset
 // ListStateFulSetProjeto listar StateFulSet por projetos
 func ListStateFulSetProjeto(token string, url string, projeto string) (resultado int, statefulsets model.StateFulSets) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/statefulsets"
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListStateFulSetProjeto(token string, url string, projeto string) (resultado
 // ListStateFulSetProjetoString listar StateFulSet por projetos
 func ListStateFulSetProjetoString(token string, url string, projeto string) (resultado int, statefulsetsString string) {
 	//token := GetToken(url)
-	endpoint := url + apisAppsv1beta1Namespace + projeto + "/statefulsets"
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

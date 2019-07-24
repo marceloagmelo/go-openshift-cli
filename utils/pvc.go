@@ -11,7 +11,7 @@ import (
 // GetPvc recuperar PVC
 func GetPvc(token string, url string, projeto string, nome string) (resultado int, pvc model.Pvc) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/persistentvolumeclaims/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetPvc(token string, url string, projeto string, nome string) (resultado in
 // GetPvcString recuperar PVC
 func GetPvcString(token string, url string, projeto string, nome string) (resultado int, pvcString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/persistentvolumeclaims/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListPvcString(token string, url string) (resultado int, pvcsString string) 
 // ListPvcProjeto listar PVC por projetos
 func ListPvcProjeto(token string, url string, projeto string) (resultado int, pvcs model.Pvcs) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/persistentvolumeclaims"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListPvcProjeto(token string, url string, projeto string) (resultado int, pv
 // ListPvcProjetoString listar PVC por projetos
 func ListPvcProjetoString(token string, url string, projeto string) (resultado int, pvcsString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/persistentvolumeclaims"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

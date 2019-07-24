@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-//Projeto dados
+//Projetos dados
 type Projetos struct {
 	Kind       string `json:"kind"`
 	APIVersion string `json:"apiVersion"`

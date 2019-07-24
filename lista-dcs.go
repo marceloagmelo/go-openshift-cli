@@ -11,8 +11,8 @@ import (
 func main() {
 	url := utils.URLGen("pre")
 	token := utils.GetToken(url)
-	resultado, dcs := utils.ListDcProjeto(token, url, "teste-01")
-	//resultado, dcs := utils.ListDc(token, url)
+	//resultado, dcs := utils.ListDeploymentConfigProjeto(token, url, "teste-01")
+	resultado, dcs := utils.ListDeploymentConfig(token, url)
 	os.Mkdir("/home/marcelo/jsons", 0700)
 	os.Mkdir("/home/marcelo/jsons/teste", 0700)
 	if resultado == 0 {

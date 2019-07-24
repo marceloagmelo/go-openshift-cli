@@ -35,7 +35,7 @@ func ListPod(token string, url string) (resultado int, pods model.Pods) {
 // ListPodProjeto listar pod por projetos
 func ListPodProjeto(token string, url string, projeto string) (resultado int, pods model.Pods) {
 	//token := GetToken(url)
-	endpoint := url + apiPodsNamespace + projeto + "/pods"
+	endpoint := url + apiPods + "namespaces/" + projeto + "/pods"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

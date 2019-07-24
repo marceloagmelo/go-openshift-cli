@@ -8,10 +8,10 @@ import (
 	"github.com/marceloagmelo/go-openshift-cli/model"
 )
 
-// GetDc recuperar DC
-func GetDc(token string, url string, projeto string, nome string) (resultado int, dc model.Dc) {
+// GetDeploymentConfig recuperar DC
+func GetDeploymentConfig(token string, url string, projeto string, nome string) (resultado int, dc model.Dc) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaceApps + projeto + "/deploymentconfigs/" + nome
+	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -20,13 +20,13 @@ func GetDc(token string, url string, projeto string, nome string) (resultado int
 	if resposta.StatusCode == 200 {
 		corpo, err := ioutil.ReadAll(resposta.Body)
 		if err != nil {
-			fmt.Println("[GetDc] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			fmt.Println("[GetDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
 		dc = model.Dc{}
 		err = json.Unmarshal(corpo, &dc)
 		if err != nil {
-			fmt.Println("[GetDc] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
+			fmt.Println("[GetDeploymentConfig] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
 			resultado = 1
 		}
 	} else {
@@ -35,17 +35,19 @@ func GetDc(token string, url string, projeto string, nome string) (resultado int
 	return resultado, dc
 }
 
-// GetDcString recuperar DC
-func GetDcString(token string, url string, projeto string, nome string) (resultado int, dcString string) {
+// GetDeploymentConfigString recuperar DC
+func GetDeploymentConfigString(token string, url string, projeto string, nome string) (resultado int, dcString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaceApps + projeto + "/deploymentconfigs/" + nome
+	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs/" + nome
+
+	fmt.Println("[endpoint] Erro ao ler o conteudo da pagina. Erro: ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
 		corpo, err := ioutil.ReadAll(resposta.Body)
 		if err != nil {
-			fmt.Println("[GetDc] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			fmt.Println("[GetDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
 		dcString = string(corpo)
@@ -55,8 +57,8 @@ func GetDcString(token string, url string, projeto string, nome string) (resulta
 	return resultado, dcString
 }
 
-// ListDc listar todos deploymentconfig
-func ListDc(token string, url string) (resultado int, dcs model.Dcs) {
+// ListDeploymentConfig listar todos deploymentconfig
+func ListDeploymentConfig(token string, url string) (resultado int, dcs model.Dcs) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
@@ -64,13 +66,13 @@ func ListDc(token string, url string) (resultado int, dcs model.Dcs) {
 	if resposta.StatusCode == 200 {
 		corpo, err := ioutil.ReadAll(resposta.Body)
 		if err != nil {
-			fmt.Println("[ListDc] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			fmt.Println("[ListDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
 		dcs = model.Dcs{}
 		err = json.Unmarshal(corpo, &dcs)
 		if err != nil {
-			fmt.Println("[ListDc] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
+			fmt.Println("[ListDeploymentConfig] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
 			resultado = 1
 		}
 	} else {
@@ -79,8 +81,8 @@ func ListDc(token string, url string) (resultado int, dcs model.Dcs) {
 	return resultado, dcs
 }
 
-// ListDcString listar todos deploymentconfig
-func ListDcString(token string, url string) (resultado int, dcsString string) {
+// ListDeploymentConfigString listar todos deploymentconfig
+func ListDeploymentConfigString(token string, url string) (resultado int, dcsString string) {
 	//token := GetToken(url)
 	endpoint := url + apiApps + "deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
@@ -88,7 +90,7 @@ func ListDcString(token string, url string) (resultado int, dcsString string) {
 	if resposta.StatusCode == 200 {
 		corpo, err := ioutil.ReadAll(resposta.Body)
 		if err != nil {
-			fmt.Println("[ListDc] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			fmt.Println("[ListDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
 		dcsString = string(corpo)
@@ -98,22 +100,22 @@ func ListDcString(token string, url string) (resultado int, dcsString string) {
 	return resultado, dcsString
 }
 
-// ListDcProjeto listar deploymentconfig por projetos
-func ListDcProjeto(token string, url string, projeto string) (resultado int, dcs model.Dcs) {
+// ListDeploymentConfigProjeto listar deploymentconfig por projetos
+func ListDeploymentConfigProjeto(token string, url string, projeto string) (resultado int, dcs model.Dcs) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaceApps + projeto + "/deploymentconfigs"
+	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
 		corpo, err := ioutil.ReadAll(resposta.Body)
 		if err != nil {
-			fmt.Println("[ListDcProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			fmt.Println("[ListDeploymentConfigProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
 		}
 		dcs = model.Dcs{}
 		err = json.Unmarshal(corpo, &dcs)
 		if err != nil {
-			fmt.Println("[ListDcProjeto] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
+			fmt.Println("[ListDeploymentConfigProjeto] Erro ao converter o retorno JSON do Servidor. Erro: ", err.Error())
 			resultado = 1
 		}
 	} else {
@@ -122,7 +124,7 @@ func ListDcProjeto(token string, url string, projeto string) (resultado int, dcs
 	return resultado, dcs
 }
 
-// GetDcImage recuperar DC
-func GetDcImage(dc model.Dc) string {
+// GetDeploymentConfigImage recuperar DC
+func GetDeploymentConfigImage(dc model.Dc) string {
 	return dc.Spec.Template.Spec.Containers[0].Image
 }

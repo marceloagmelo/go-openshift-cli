@@ -11,7 +11,7 @@ import (
 // GetRoute recuperar Route
 func GetRoute(token string, url string, projeto string, nome string) (resultado int, route model.Route) {
 	//token := GetToken(url)
-	endpoint := url + apiRoutesNamespace + projeto + "/routes/" + nome
+	endpoint := url + apiRoutes + "namespaces/" + projeto + "/routes/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetRoute(token string, url string, projeto string, nome string) (resultado 
 // GetRouteString recuperar Route
 func GetRouteString(token string, url string, projeto string, nome string) (resultado int, routeString string) {
 	//token := GetToken(url)
-	endpoint := url + apiRoutesNamespace + projeto + "/routes/" + nome
+	endpoint := url + apiRoutes + "namespaces/" + projeto + "/routes/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListRouteString(token string, url string) (resultado int, routesString stri
 // ListRouteProjeto listar Routes por projetos
 func ListRouteProjeto(token string, url string, projeto string) (resultado int, routes model.Routes) {
 	//token := GetToken(url)
-	endpoint := url + apiRoutesNamespace + projeto + "/routes"
+	endpoint := url + apiRoutes + "namespaces/" + projeto + "/routes"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListRouteProjeto(token string, url string, projeto string) (resultado int, 
 // ListRouteProjetoString listar Routes por projetos
 func ListRouteProjetoString(token string, url string, projeto string) (resultado int, routesString string) {
 	//token := GetToken(url)
-	endpoint := url + apiRoutesNamespace + projeto + "/routes"
+	endpoint := url + apiRoutes + "namespaces/" + projeto + "/routes"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

@@ -11,7 +11,7 @@ import (
 // GetService recuperar SVC
 func GetService(token string, url string, projeto string, nome string) (resultado int, service model.Service) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/services/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/services/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetService(token string, url string, projeto string, nome string) (resultad
 // GetServiceString recuperar SVC
 func GetServiceString(token string, url string, projeto string, nome string) (resultado int, serviceString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/services/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/services/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListServiceString(token string, url string) (resultado int, servicesString 
 // ListServiceProjeto listar SVC por projetos
 func ListServiceProjeto(token string, url string, projeto string) (resultado int, services model.Services) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/services"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/services"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListServiceProjeto(token string, url string, projeto string) (resultado int
 // ListServiceProjetoString listar SVC por projetos
 func ListServiceProjetoString(token string, url string, projeto string) (resultado int, servicesString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/services"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/services"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {

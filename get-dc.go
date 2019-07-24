@@ -10,7 +10,7 @@ func main() {
 	url := utils.URLGen("pre")
 	token := utils.GetToken(url)
 
-	resultado, dc := utils.GetDcString(token, url, "bio-dev", "bio-spa")
+	resultado, dc := utils.GetDeploymentConfigString(token, url, "teste-01", "nodemysql")
 	if resultado > 0 {
 		fmt.Println("[main] O dc debug não encontrado em ", url)
 		return

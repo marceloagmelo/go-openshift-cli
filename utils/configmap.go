@@ -11,7 +11,7 @@ import (
 // GetConfigMap recuperar ConfigMap
 func GetConfigMap(token string, url string, projeto string, nome string) (resultado int, configMap model.ConfigMap) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/configmaps/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
 
@@ -38,7 +38,7 @@ func GetConfigMap(token string, url string, projeto string, nome string) (result
 // GetConfigMapString recuperar ConfigMap
 func GetConfigMapString(token string, url string, projeto string, nome string) (resultado int, configMapString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/configmaps/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListConfigMapString(token string, url string) (resultado int, configmapStri
 // ListConfigMapProjeto listar ConfigMaps por projetos
 func ListConfigMapProjeto(token string, url string, projeto string) (resultado int, configmap model.ConfigMaps) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/configmaps"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -125,7 +125,7 @@ func ListConfigMapProjeto(token string, url string, projeto string) (resultado i
 // ListConfigMapProjetoString listar ConfigMaps por projetos
 func ListConfigMapProjetoString(token string, url string, projeto string) (resultado int, configmapString string) {
 	//token := GetToken(url)
-	endpoint := url + apiNamespaces + projeto + "/configmaps"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
