@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetServiceAccount recuperar ServiceAccount
 func GetServiceAccount(token string, url string, projeto string, nome string) (resultado int, serviceAccount model.ServiceAccount) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts/" + nome
-
-	fmt.Println("[endpoint] : ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -22,6 +20,7 @@ func GetServiceAccount(token string, url string, projeto string, nome string) (r
 		if err != nil {
 			fmt.Println("[getServiceAccount] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, serviceAccount
 		}
 		serviceAccount = model.ServiceAccount{}
 		err = json.Unmarshal(corpo, &serviceAccount)
@@ -37,7 +36,7 @@ func GetServiceAccount(token string, url string, projeto string, nome string) (r
 
 // GetServiceAccountString recuperar ServiceAccount
 func GetServiceAccountString(token string, url string, projeto string, nome string) (resultado int, serviceAccountString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +56,7 @@ func GetServiceAccountString(token string, url string, projeto string, nome stri
 
 // ListServiceAccount listar todos serviceaccounts
 func ListServiceAccount(token string, url string) (resultado int, serviceAccounts model.ServiceAccounts) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "serviceaccounts"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -66,6 +65,7 @@ func ListServiceAccount(token string, url string) (resultado int, serviceAccount
 		if err != nil {
 			fmt.Println("[ListServiceAccount] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, serviceAccounts
 		}
 		serviceAccounts = model.ServiceAccounts{}
 		err = json.Unmarshal(corpo, &serviceAccounts)
@@ -81,7 +81,7 @@ func ListServiceAccount(token string, url string) (resultado int, serviceAccount
 
 // ListserviceAccountString listar todos serviceaccounts
 func ListserviceAccountString(token string, url string) (resultado int, serviceAccountString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "serviceaccounts"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -100,7 +100,7 @@ func ListserviceAccountString(token string, url string) (resultado int, serviceA
 
 // ListServiceAccountProjeto listar serviceaccounts por projetos
 func ListServiceAccountProjeto(token string, url string, projeto string) (resultado int, serviceAccount model.ServiceAccount) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -109,6 +109,7 @@ func ListServiceAccountProjeto(token string, url string, projeto string) (result
 		if err != nil {
 			fmt.Println("[ListServiceAccountProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, serviceAccount
 		}
 		serviceAccount = model.ServiceAccount{}
 		err = json.Unmarshal(corpo, &serviceAccount)
@@ -124,7 +125,7 @@ func ListServiceAccountProjeto(token string, url string, projeto string) (result
 
 // ListServiceAccountProjetoString listar serviceaccounts por projetos
 func ListServiceAccountProjetoString(token string, url string, projeto string) (resultado int, serviceAccountString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -139,4 +140,27 @@ func ListServiceAccountProjetoString(token string, url string, projeto string) (
 		resultado = 1
 	}
 	return resultado, serviceAccountString
+}
+
+// CriarServiceAccount criar um serviceaccounts
+func CriarServiceAccount(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/serviceaccounts"
+
+	cmd := "sed -i s/\\\"resourceVersion[^,]*,//g " + conteudoJSON
+	resultado, _ = ExecCmd(cmd)
+
+	if resultado > 0 {
+		fmt.Println("[CriarServiceAccount] Erro ao executar o comando no OS.")
+		erro = "[CriarServiceAccount] Erro ao executar o comando no OS."
+		return resultado, erro
+	}
+
+	resultado, resposta := PostRequestFile(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

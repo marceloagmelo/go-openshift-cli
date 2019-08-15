@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetDaemonSet recuperar DaemonSet
 func GetDaemonSet(token string, url string, projeto string, nome string) (resultado int, daemonSet model.DaemonSet) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisExtensionsV1beta1 + "namespaces/" + projeto + "/daemonsets/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
@@ -22,6 +22,7 @@ func GetDaemonSet(token string, url string, projeto string, nome string) (result
 		if err != nil {
 			fmt.Println("[GetDaemonSet] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, daemonSet
 		}
 		daemonSet = model.DaemonSet{}
 		err = json.Unmarshal(corpo, &daemonSet)
@@ -37,7 +38,7 @@ func GetDaemonSet(token string, url string, projeto string, nome string) (result
 
 // GetDaemonSetString recuperar DaemonSet
 func GetDaemonSetString(token string, url string, projeto string, nome string) (resultado int, daemonSetString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisExtensionsV1beta1 + "namespaces/" + projeto + "/daemonsets/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +58,7 @@ func GetDaemonSetString(token string, url string, projeto string, nome string) (
 
 // ListDaemonSet listar todos DaemonSets
 func ListDaemonSet(token string, url string) (resultado int, daemonset model.DaemonSets) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisExtensionsV1beta1 + "daemonsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -66,6 +67,7 @@ func ListDaemonSet(token string, url string) (resultado int, daemonset model.Dae
 		if err != nil {
 			fmt.Println("[ListDaemonSet] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, daemonset
 		}
 		daemonset = model.DaemonSets{}
 		err = json.Unmarshal(corpo, &daemonset)
@@ -81,7 +83,7 @@ func ListDaemonSet(token string, url string) (resultado int, daemonset model.Dae
 
 // ListDaemonSetString listar todos DaemonSets
 func ListDaemonSetString(token string, url string) (resultado int, daemonsetString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisExtensionsV1beta1 + "daemonsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -100,7 +102,7 @@ func ListDaemonSetString(token string, url string) (resultado int, daemonsetStri
 
 // ListDaemonSetProjeto listar DaemonSets por projetos
 func ListDaemonSetProjeto(token string, url string, projeto string) (resultado int, daemonset model.DaemonSets) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisExtensionsV1beta1 + "namespaces/" + projeto + "/daemonsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -109,6 +111,7 @@ func ListDaemonSetProjeto(token string, url string, projeto string) (resultado i
 		if err != nil {
 			fmt.Println("[ListDaemonSetProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, daemonset
 		}
 		daemonset = model.DaemonSets{}
 		err = json.Unmarshal(corpo, &daemonset)
@@ -122,21 +125,16 @@ func ListDaemonSetProjeto(token string, url string, projeto string) (resultado i
 	return resultado, daemonset
 }
 
-// ListDaemonSetProjetoString listar DaemonSets por projetos
-func ListDaemonSetProjetoString(token string, url string, projeto string) (resultado int, daemonsetString string) {
-	//token := GetToken(url)
+// CriarDeployment criar um DaemonSets
+func CriarDaemonSet(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
 	endpoint := url + apisExtensionsV1beta1 + "namespaces/" + projeto + "/daemonsets"
-	resultado, resposta := GetRequest(token, endpoint)
+
+	resultado, resposta := PostRequest(token, endpoint, conteudoJSON)
 	defer resposta.Body.Close()
-	if resposta.StatusCode == 200 {
-		corpo, err := ioutil.ReadAll(resposta.Body)
-		if err != nil {
-			fmt.Println("[ListDaemonSetString] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
-			resultado = 1
-		}
-		daemonsetString = string(corpo)
-	} else {
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
 		resultado = 1
 	}
-	return resultado, daemonsetString
+	return resultado, erro
 }

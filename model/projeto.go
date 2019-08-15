@@ -1,18 +1,14 @@
 package model
 
-import "time"
-
 //Projeto dados
 type Projeto struct {
 	Kind       string `json:"kind"`
 	APIVersion string `json:"apiVersion"`
 	Metadata   struct {
-		Name              string    `json:"name"`
-		SelfLink          string    `json:"selfLink"`
-		UID               string    `json:"uid"`
-		ResourceVersion   string    `json:"resourceVersion"`
-		CreationTimestamp time.Time `json:"creationTimestamp"`
-		Labels            struct {
+		Name            string `json:"name"`
+		UID             string `json:"uid"`
+		ResourceVersion string `json:"resourceVersion"`
+		Labels          struct {
 			Router string `json:"router"`
 		} `json:"labels"`
 		Annotations struct {

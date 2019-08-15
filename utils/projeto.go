@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetProjeto recuperar projeto
 func GetProjeto(token string, url string, nome string) (resultado int, proj model.Projeto) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiProjeto + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -20,6 +20,7 @@ func GetProjeto(token string, url string, nome string) (resultado int, proj mode
 		if err != nil {
 			fmt.Println("[GetProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, proj
 		}
 		proj = model.Projeto{}
 		err = json.Unmarshal(corpo, &proj)
@@ -33,9 +34,29 @@ func GetProjeto(token string, url string, nome string) (resultado int, proj mode
 	return resultado, proj
 }
 
+// GetProjetoString recuperar projeto
+func GetProjetoString(token string, url string, nome string) (resultado int, projString string) {
+	resultado = 0
+	endpoint := url + apiProjeto + nome
+
+	resultado, resposta := GetRequest(token, endpoint)
+	defer resposta.Body.Close()
+	if resposta.StatusCode == 200 {
+		corpo, err := ioutil.ReadAll(resposta.Body)
+		if err != nil {
+			fmt.Println("[GetProjetoString] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			resultado = 1
+		}
+		projString = string(corpo)
+	} else {
+		resultado = 1
+	}
+	return resultado, projString
+}
+
 // Projetos listar projetos
 func Projetos(token string, url string) (resultado int, projetos model.Projetos) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiProjeto
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -45,6 +66,7 @@ func Projetos(token string, url string) (resultado int, projetos model.Projetos)
 		if err != nil {
 			fmt.Println("[Projetos] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, projetos
 		}
 		projetos = model.Projetos{}
 		err = json.Unmarshal(corpo, &projetos)
@@ -60,7 +82,7 @@ func Projetos(token string, url string) (resultado int, projetos model.Projetos)
 
 // GetNamespace recuperar namespace
 func GetNamespace(token string, url string, nome string) (resultado int, proj model.Projeto) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -70,6 +92,7 @@ func GetNamespace(token string, url string, nome string) (resultado int, proj mo
 		if err != nil {
 			fmt.Println("[GetNamespace] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, proj
 		}
 		proj = model.Projeto{}
 		err = json.Unmarshal(corpo, &proj)
@@ -83,10 +106,31 @@ func GetNamespace(token string, url string, nome string) (resultado int, proj mo
 	return resultado, proj
 }
 
+// GetNamespaceString recuperar namespace
+func GetNamespaceString(token string, url string, nome string) (resultado int, projString string) {
+	resultado = 0
+	endpoint := url + apiV1 + "namespaces/" + nome
+
+	resultado, resposta := GetRequest(token, endpoint)
+	defer resposta.Body.Close()
+	if resposta.StatusCode == 200 {
+		corpo, err := ioutil.ReadAll(resposta.Body)
+		if err != nil {
+			fmt.Println("[GetNamespaceString] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
+			resultado = 1
+		}
+		projString = string(corpo)
+	} else {
+		resultado = 1
+	}
+	return resultado, projString
+}
+
 // Namespaces listar namespaces
 func Namespaces(token string, url string) (resultado int, projetos model.Projetos) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/"
+
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -94,6 +138,7 @@ func Namespaces(token string, url string) (resultado int, projetos model.Projeto
 		if err != nil {
 			fmt.Println("[Namespaces] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, projetos
 		}
 		projetos = model.Projetos{}
 		err = json.Unmarshal(corpo, &projetos)
@@ -105,4 +150,18 @@ func Namespaces(token string, url string) (resultado int, projetos model.Projeto
 		resultado = 1
 	}
 	return resultado, projetos
+}
+
+// CriarNamespace criar um namespace
+func CriarNamespace(token string, url string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apiV1 + "namespaces/"
+
+	resultado, resposta := PostRequest(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

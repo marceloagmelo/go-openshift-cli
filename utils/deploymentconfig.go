@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetDeploymentConfig recuperar DC
 func GetDeploymentConfig(token string, url string, projeto string, nome string) (resultado int, dc model.DeploymentConfig) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs/" + nome
-
-	fmt.Println("[endpoint] : ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -22,6 +20,7 @@ func GetDeploymentConfig(token string, url string, projeto string, nome string) 
 		if err != nil {
 			fmt.Println("[GetDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, dc
 		}
 		dc = model.DeploymentConfig{}
 		err = json.Unmarshal(corpo, &dc)
@@ -37,7 +36,7 @@ func GetDeploymentConfig(token string, url string, projeto string, nome string) 
 
 // GetDeploymentConfigString recuperar DC
 func GetDeploymentConfigString(token string, url string, projeto string, nome string) (resultado int, dcString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +56,7 @@ func GetDeploymentConfigString(token string, url string, projeto string, nome st
 
 // ListDeploymentConfig listar todos deploymentconfig
 func ListDeploymentConfig(token string, url string) (resultado int, dcs model.DeploymentConfigs) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiApps + "deploymentconfigs"
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -67,6 +66,7 @@ func ListDeploymentConfig(token string, url string) (resultado int, dcs model.De
 		if err != nil {
 			fmt.Println("[ListDeploymentConfig] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, dcs
 		}
 		dcs = model.DeploymentConfigs{}
 		err = json.Unmarshal(corpo, &dcs)
@@ -82,7 +82,7 @@ func ListDeploymentConfig(token string, url string) (resultado int, dcs model.De
 
 // ListDeploymentConfigString listar todos deploymentconfig
 func ListDeploymentConfigString(token string, url string) (resultado int, dcsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiApps + "deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListDeploymentConfigString(token string, url string) (resultado int, dcsStr
 
 // ListDeploymentConfigProjeto listar deploymentconfig por projetos
 func ListDeploymentConfigProjeto(token string, url string, projeto string) (resultado int, dcs model.DeploymentConfigs) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -110,6 +110,7 @@ func ListDeploymentConfigProjeto(token string, url string, projeto string) (resu
 		if err != nil {
 			fmt.Println("[ListDeploymentConfigProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, dcs
 		}
 		dcs = model.DeploymentConfigs{}
 		err = json.Unmarshal(corpo, &dcs)
@@ -126,4 +127,44 @@ func ListDeploymentConfigProjeto(token string, url string, projeto string) (resu
 // GetDeploymentConfigImage recuperar DC
 func GetDeploymentConfigImage(dc model.DeploymentConfig) string {
 	return dc.Spec.Template.Spec.Containers[0].Image
+}
+
+// CriarDeploymentConfig criar um deployment config
+func CriarDeploymentConfig(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+
+	endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs"
+
+	cmd := "sed -i s/\\\"resourceVersion[^,]*,//g " + conteudoJSON
+	resultado, _ = ExecCmd(cmd)
+
+	if resultado > 0 {
+		fmt.Println("[CriarDeploymentConfig] Erro ao executar o comando no OS.")
+		erro = "[CriarDeploymentConfig] Erro ao executar o comando no OS."
+		return resultado, erro
+	}
+
+	resultado, resposta := PostRequestFile(token, endpoint, conteudoJSON)
+	//resultado, resposta := PostRequest(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	/*
+		token = strings.TrimRight(token, "\r\n")
+		bearer := `"Authorization: Bearer ` + token + `"`
+		header := "-k -X POST -d @- -H " + bearer + " -H 'Accept: application/json' -H 'Content-Type: application/json'"
+		endpoint := url + apiApps + "namespaces/" + projeto + "/deploymentconfigs"
+		cmdCurl := "curl " + header + " " + endpoint + " <<'EOF'\n\r" + conteudoJSON + "EOF "
+
+		resultado, erro = utils.ExecCurl(cmdCurl)
+
+		if resultado > 0 {
+			fmt.Println("[CriarDeploymentConfig] Erro ao executar o CURL.")
+			erro = "[CriarDeploymentConfig] Erro ao executar o CURL."
+			resultado = 1
+		}
+	*/
+	return resultado, erro
 }

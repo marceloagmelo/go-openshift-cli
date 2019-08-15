@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetStateFulSet recuperar StateFulSet
 func GetStateFulSet(token string, url string, projeto string, nome string) (resultado int, statefulset model.StateFulSet) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets/" + nome
-
-	fmt.Println("[endpoint] : ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -22,6 +20,7 @@ func GetStateFulSet(token string, url string, projeto string, nome string) (resu
 		if err != nil {
 			fmt.Println("[GetStateFulSet] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, statefulset
 		}
 		statefulset = model.StateFulSet{}
 		err = json.Unmarshal(corpo, &statefulset)
@@ -37,7 +36,7 @@ func GetStateFulSet(token string, url string, projeto string, nome string) (resu
 
 // GetStateFulSetString recuperar StateFulSet
 func GetStateFulSetString(token string, url string, projeto string, nome string) (resultado int, statefulsetString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +56,7 @@ func GetStateFulSetString(token string, url string, projeto string, nome string)
 
 // ListStateFulSet listar todos StateFulSet
 func ListStateFulSet(token string, url string) (resultado int, statefulsets model.StateFulSets) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "statefulsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -66,6 +65,7 @@ func ListStateFulSet(token string, url string) (resultado int, statefulsets mode
 		if err != nil {
 			fmt.Println("[ListStateFulSet] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, statefulsets
 		}
 		statefulsets = model.StateFulSets{}
 		err = json.Unmarshal(corpo, &statefulsets)
@@ -81,7 +81,7 @@ func ListStateFulSet(token string, url string) (resultado int, statefulsets mode
 
 // ListStateFulSetString listar todos StateFulSet
 func ListStateFulSetString(token string, url string) (resultado int, statefulsetsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "statefulsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -100,7 +100,7 @@ func ListStateFulSetString(token string, url string) (resultado int, statefulset
 
 // ListStateFulSetProjeto listar StateFulSet por projetos
 func ListStateFulSetProjeto(token string, url string, projeto string) (resultado int, statefulsets model.StateFulSets) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -109,6 +109,7 @@ func ListStateFulSetProjeto(token string, url string, projeto string) (resultado
 		if err != nil {
 			fmt.Println("[ListStateFulSetProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, statefulsets
 		}
 		statefulsets = model.StateFulSets{}
 		err = json.Unmarshal(corpo, &statefulsets)
@@ -124,7 +125,7 @@ func ListStateFulSetProjeto(token string, url string, projeto string) (resultado
 
 // ListStateFulSetProjetoString listar StateFulSet por projetos
 func ListStateFulSetProjetoString(token string, url string, projeto string) (resultado int, statefulsetsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -139,4 +140,27 @@ func ListStateFulSetProjetoString(token string, url string, projeto string) (res
 		resultado = 1
 	}
 	return resultado, statefulsetsString
+}
+
+// CriarStateFulSet criar um StateFulSet
+func CriarStateFulSet(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/statefulsets"
+
+	cmd := "sed -i s/\\\"resourceVersion[^,]*,//g " + conteudoJSON
+	resultado, _ = ExecCmd(cmd)
+
+	if resultado > 0 {
+		fmt.Println("[CriarStateFulSet] Erro ao executar o comando no OS.")
+		erro = "[CriarStateFulSet] Erro ao executar o comando no OS."
+		return resultado, erro
+	}
+
+	resultado, resposta := PostRequestFile(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

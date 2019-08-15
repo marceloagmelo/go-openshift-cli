@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetImageStream recuperar ImageStream
 func GetImageStream(token string, url string, projeto string, nome string) (resultado int, imageStream model.ImageStream) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisImageV1 + "namespaces/" + projeto + "/imagestreams/" + nome
-
-	fmt.Println("[endpoint] : ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -22,6 +20,7 @@ func GetImageStream(token string, url string, projeto string, nome string) (resu
 		if err != nil {
 			fmt.Println("[GetImageStream] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, imageStream
 		}
 		imageStream = model.ImageStream{}
 		err = json.Unmarshal(corpo, &imageStream)
@@ -37,7 +36,7 @@ func GetImageStream(token string, url string, projeto string, nome string) (resu
 
 // GetImageStreamString recuperar ImageStream
 func GetImageStreamString(token string, url string, projeto string, nome string) (resultado int, imageStreamString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisImageV1 + "namespaces/" + projeto + "/imagestreams/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +56,7 @@ func GetImageStreamString(token string, url string, projeto string, nome string)
 
 // ListImageStream listar todos imagestreams
 func ListImageStream(token string, url string) (resultado int, imageStream model.ImageStreams) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisImageV1 + "imagestreams"
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -67,6 +66,7 @@ func ListImageStream(token string, url string) (resultado int, imageStream model
 		if err != nil {
 			fmt.Println("[ListImageStream] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, imageStream
 		}
 		imageStream = model.ImageStreams{}
 		err = json.Unmarshal(corpo, &imageStream)
@@ -82,7 +82,7 @@ func ListImageStream(token string, url string) (resultado int, imageStream model
 
 // ListImageStreamString listar todos imagestreams
 func ListImageStreamString(token string, url string) (resultado int, imageStreamString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisImageV1 + "imagestreams"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -101,7 +101,7 @@ func ListImageStreamString(token string, url string) (resultado int, imageStream
 
 // ListImageStreamProjeto listar imagestreams por projetos
 func ListImageStreamProjeto(token string, url string, projeto string) (resultado int, imageStream model.ImageStreams) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisImageV1 + "namespaces/" + projeto + "/imagestreams"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -110,6 +110,7 @@ func ListImageStreamProjeto(token string, url string, projeto string) (resultado
 		if err != nil {
 			fmt.Println("[ListImageStreamProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, imageStream
 		}
 		imageStream = model.ImageStreams{}
 		err = json.Unmarshal(corpo, &imageStream)
@@ -125,7 +126,7 @@ func ListImageStreamProjeto(token string, url string, projeto string) (resultado
 
 // ListImageStreamProjetoString listar imagestreams por projetos
 func ListImageStreamProjetoString(token string, url string, projeto string) (resultado int, imageStreamString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisImageV1 + "namespaces/" + projeto + "/imagestreams"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -140,4 +141,18 @@ func ListImageStreamProjetoString(token string, url string, projeto string) (res
 		resultado = 1
 	}
 	return resultado, imageStreamString
+}
+
+// CriarImageStream criar um image stream
+func CriarImageStream(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apisImageV1 + "namespaces/" + projeto + "/imagestreams"
+
+	resultado, resposta := PostRequest(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

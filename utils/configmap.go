@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetConfigMap recuperar ConfigMap
 func GetConfigMap(token string, url string, projeto string, nome string) (resultado int, configMap model.ConfigMap) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
@@ -22,6 +22,7 @@ func GetConfigMap(token string, url string, projeto string, nome string) (result
 		if err != nil {
 			fmt.Println("[GetConfigMap] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, configMap
 		}
 		configMap = model.ConfigMap{}
 		err = json.Unmarshal(corpo, &configMap)
@@ -37,7 +38,7 @@ func GetConfigMap(token string, url string, projeto string, nome string) (result
 
 // GetConfigMapString recuperar ConfigMap
 func GetConfigMapString(token string, url string, projeto string, nome string) (resultado int, configMapString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +58,7 @@ func GetConfigMapString(token string, url string, projeto string, nome string) (
 
 // ListConfigMap listar todos ConfigMaps
 func ListConfigMap(token string, url string) (resultado int, configmap model.ConfigMaps) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "configmaps"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -66,6 +67,7 @@ func ListConfigMap(token string, url string) (resultado int, configmap model.Con
 		if err != nil {
 			fmt.Println("[ListConfigMap] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, configmap
 		}
 		configmap = model.ConfigMaps{}
 		err = json.Unmarshal(corpo, &configmap)
@@ -81,7 +83,7 @@ func ListConfigMap(token string, url string) (resultado int, configmap model.Con
 
 // ListConfigMapString listar todos ConfigMaps
 func ListConfigMapString(token string, url string) (resultado int, configmapString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "configmaps"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -100,7 +102,7 @@ func ListConfigMapString(token string, url string) (resultado int, configmapStri
 
 // ListConfigMapProjeto listar ConfigMaps por projetos
 func ListConfigMapProjeto(token string, url string, projeto string) (resultado int, configmap model.ConfigMaps) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -109,6 +111,7 @@ func ListConfigMapProjeto(token string, url string, projeto string) (resultado i
 		if err != nil {
 			fmt.Println("[ListConfigMapProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, configmap
 		}
 		configmap = model.ConfigMaps{}
 		err = json.Unmarshal(corpo, &configmap)
@@ -124,7 +127,7 @@ func ListConfigMapProjeto(token string, url string, projeto string) (resultado i
 
 // ListConfigMapProjetoString listar ConfigMaps por projetos
 func ListConfigMapProjetoString(token string, url string, projeto string) (resultado int, configmapString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -139,4 +142,27 @@ func ListConfigMapProjetoString(token string, url string, projeto string) (resul
 		resultado = 1
 	}
 	return resultado, configmapString
+}
+
+// CriarConfigMap criar um config map
+func CriarConfigMap(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/configmaps"
+
+	cmd := "sed -i s/\\\"resourceVersion[^,]*,//g " + conteudoJSON
+	resultado, _ = ExecCmd(cmd)
+
+	if resultado > 0 {
+		fmt.Println("[CriarConfigMap] Erro ao executar o comando no OS.")
+		erro = "[CriarConfigMap] Erro ao executar o comando no OS."
+		return resultado, erro
+	}
+
+	resultado, resposta := PostRequestFile(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

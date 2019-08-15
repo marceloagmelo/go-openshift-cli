@@ -1,19 +1,15 @@
 package model
 
-import "time"
-
 //Pvc dados
 type Pvc struct {
 	Kind       string `json:"kind"`
 	APIVersion string `json:"apiVersion"`
 	Metadata   struct {
-		Name              string    `json:"name"`
-		Namespace         string    `json:"namespace"`
-		SelfLink          string    `json:"selfLink"`
-		UID               string    `json:"uid"`
-		ResourceVersion   string    `json:"resourceVersion"`
-		CreationTimestamp time.Time `json:"creationTimestamp"`
-		Labels            struct {
+		Name            string `json:"name"`
+		Namespace       string `json:"namespace"`
+		UID             string `json:"uid"`
+		ResourceVersion string `json:"resourceVersion"`
+		Labels          struct {
 			Template string `json:"template"`
 		} `json:"labels"`
 		Annotations struct {

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetDeployment recuperar Deployment
 func GetDeployment(token string, url string, projeto string, nome string) (resultado int, deployment model.Deployment) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments/" + nome
 
 	fmt.Println("[endpoint] : ", endpoint)
@@ -22,6 +22,7 @@ func GetDeployment(token string, url string, projeto string, nome string) (resul
 		if err != nil {
 			fmt.Println("[GetDeployment] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, deployment
 		}
 		deployment = model.Deployment{}
 		err = json.Unmarshal(corpo, &deployment)
@@ -37,7 +38,7 @@ func GetDeployment(token string, url string, projeto string, nome string) (resul
 
 // GetDeploymentString recuperar Deployment
 func GetDeploymentString(token string, url string, projeto string, nome string) (resultado int, deploymentString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +58,7 @@ func GetDeploymentString(token string, url string, projeto string, nome string) 
 
 // ListDeployment listar todos Deployment
 func ListDeployment(token string, url string) (resultado int, deployments model.Deployments) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "deployments"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -66,6 +67,7 @@ func ListDeployment(token string, url string) (resultado int, deployments model.
 		if err != nil {
 			fmt.Println("[ListDeployment] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, deployments
 		}
 		deployments = model.Deployments{}
 		err = json.Unmarshal(corpo, &deployments)
@@ -81,7 +83,7 @@ func ListDeployment(token string, url string) (resultado int, deployments model.
 
 // ListDeploymentString listar todos Deployment
 func ListDeploymentString(token string, url string) (resultado int, deploymentsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "deployments"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -100,7 +102,7 @@ func ListDeploymentString(token string, url string) (resultado int, deploymentsS
 
 // ListDeploymentProjeto listar Deployment por projetos
 func ListDeploymentProjeto(token string, url string, projeto string) (resultado int, deployments model.Deployments) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -109,6 +111,7 @@ func ListDeploymentProjeto(token string, url string, projeto string) (resultado 
 		if err != nil {
 			fmt.Println("[ListDeploymentProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, deployments
 		}
 		deployments = model.Deployments{}
 		err = json.Unmarshal(corpo, &deployments)
@@ -124,7 +127,7 @@ func ListDeploymentProjeto(token string, url string, projeto string) (resultado 
 
 // ListDeploymentProjetoString listar Deployment por projetos
 func ListDeploymentProjetoString(token string, url string, projeto string) (resultado int, deploymentsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -139,4 +142,18 @@ func ListDeploymentProjetoString(token string, url string, projeto string) (resu
 		resultado = 1
 	}
 	return resultado, deploymentsString
+}
+
+// CriarDeployment criar um deployment
+func CriarDeployment(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apisAppsv1beta1 + "namespaces/" + projeto + "/deployments"
+
+	resultado, resposta := PostRequest(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

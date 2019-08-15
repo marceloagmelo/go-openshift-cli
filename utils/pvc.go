@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/marceloagmelo/go-openshift-cli/model"
+	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
 )
 
 // GetPvc recuperar PVC
 func GetPvc(token string, url string, projeto string, nome string) (resultado int, pvc model.Pvc) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims/" + nome
-
-	fmt.Println("[endpoint] : ", endpoint)
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -22,6 +20,7 @@ func GetPvc(token string, url string, projeto string, nome string) (resultado in
 		if err != nil {
 			fmt.Println("[GetPvc] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, pvc
 		}
 		pvc = model.Pvc{}
 		err = json.Unmarshal(corpo, &pvc)
@@ -37,7 +36,7 @@ func GetPvc(token string, url string, projeto string, nome string) (resultado in
 
 // GetPvcString recuperar PVC
 func GetPvcString(token string, url string, projeto string, nome string) (resultado int, pvcString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
@@ -57,7 +56,7 @@ func GetPvcString(token string, url string, projeto string, nome string) (result
 
 // ListPvc listar todos PVC
 func ListPvc(token string, url string) (resultado int, pvcs model.Pvcs) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "persistentvolumeclaims"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -66,6 +65,7 @@ func ListPvc(token string, url string) (resultado int, pvcs model.Pvcs) {
 		if err != nil {
 			fmt.Println("[ListPvc] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, pvcs
 		}
 		pvcs = model.Pvcs{}
 		err = json.Unmarshal(corpo, &pvcs)
@@ -81,7 +81,7 @@ func ListPvc(token string, url string) (resultado int, pvcs model.Pvcs) {
 
 // ListPvcString listar todos PVC
 func ListPvcString(token string, url string) (resultado int, pvcsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "persistentvolumeclaims"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -100,7 +100,7 @@ func ListPvcString(token string, url string) (resultado int, pvcsString string) 
 
 // ListPvcProjeto listar PVC por projetos
 func ListPvcProjeto(token string, url string, projeto string) (resultado int, pvcs model.Pvcs) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -109,6 +109,7 @@ func ListPvcProjeto(token string, url string, projeto string) (resultado int, pv
 		if err != nil {
 			fmt.Println("[ListPvcProjeto] Erro ao ler o conteudo da pagina. Erro: ", err.Error())
 			resultado = 1
+			return resultado, pvcs
 		}
 		pvcs = model.Pvcs{}
 		err = json.Unmarshal(corpo, &pvcs)
@@ -124,7 +125,7 @@ func ListPvcProjeto(token string, url string, projeto string) (resultado int, pv
 
 // ListPvcProjetoString listar PVC por projetos
 func ListPvcProjetoString(token string, url string, projeto string) (resultado int, pvcsString string) {
-	//token := GetToken(url)
+	resultado = 0
 	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -139,4 +140,36 @@ func ListPvcProjetoString(token string, url string, projeto string) (resultado i
 		resultado = 1
 	}
 	return resultado, pvcsString
+}
+
+// CriarPvc criar um PVC
+func CriarPvc(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
+	resultado = 0
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/persistentvolumeclaims"
+
+	cmd := "sed -i s/\\\"resourceVersion[^,]*,//g " + conteudoJSON
+	resultado, _ = ExecCmd(cmd)
+
+	if resultado > 0 {
+		fmt.Println("[CriarPvc] Erro ao executar o comando no OS.")
+		erro = "[CriarPvc] Erro ao executar o comando no OS. " + cmd
+		return resultado, erro
+	}
+
+	cmd = "sed -i s/\\\"volumeName[^,]*,//g " + conteudoJSON
+	resultado, _ = ExecCmd(cmd)
+
+	if resultado > 0 {
+		fmt.Println("[CriarPvc] Erro ao executar o comando no OS.")
+		erro = "[CriarPvc] Erro ao executar o comando no OS. " + cmd
+		return resultado, erro
+	}
+
+	resultado, resposta := PostRequestFile(token, endpoint, conteudoJSON)
+	defer resposta.Body.Close()
+	if resposta.StatusCode != 201 {
+		erro = resposta.Status
+		resultado = 1
+	}
+	return resultado, erro
 }

@@ -7,14 +7,12 @@ type ImageStream struct {
 	Kind       string `json:"kind"`
 	APIVersion string `json:"apiVersion"`
 	Metadata   struct {
-		Name              string    `json:"name"`
-		Namespace         string    `json:"namespace"`
-		SelfLink          string    `json:"selfLink"`
-		UID               string    `json:"uid"`
-		ResourceVersion   string    `json:"resourceVersion"`
-		Generation        int       `json:"generation"`
-		CreationTimestamp time.Time `json:"creationTimestamp"`
-		Annotations       struct {
+		Name            string `json:"name"`
+		Namespace       string `json:"namespace"`
+		UID             string `json:"uid"`
+		ResourceVersion string `json:"resourceVersion"`
+		Generation      int    `json:"generation"`
+		Annotations     struct {
 			OpenshiftIoDisplayName                string    `json:"openshift.io/display-name"`
 			OpenshiftIoImageDockerRepositoryCheck time.Time `json:"openshift.io/image.dockerRepositoryCheck"`
 		} `json:"annotations"`

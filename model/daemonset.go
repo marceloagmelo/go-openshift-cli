@@ -1,20 +1,16 @@
 package model
 
-import "time"
-
 //DaemonSet dados
 type DaemonSet struct {
 	Kind       string `json:"kind"`
 	APIVersion string `json:"apiVersion"`
 	Metadata   struct {
-		Name              string    `json:"name"`
-		Namespace         string    `json:"namespace"`
-		SelfLink          string    `json:"selfLink"`
-		UID               string    `json:"uid"`
-		ResourceVersion   string    `json:"resourceVersion"`
-		Generation        int       `json:"generation"`
-		CreationTimestamp time.Time `json:"creationTimestamp"`
-		Labels            struct {
+		Name            string `json:"name"`
+		Namespace       string `json:"namespace"`
+		UID             string `json:"uid"`
+		ResourceVersion string `json:"resourceVersion"`
+		Generation      int    `json:"generation"`
+		Labels          struct {
 			App string `json:"app"`
 		} `json:"labels"`
 	} `json:"metadata"`
@@ -26,8 +22,7 @@ type DaemonSet struct {
 		} `json:"selector"`
 		Template struct {
 			Metadata struct {
-				CreationTimestamp interface{} `json:"creationTimestamp"`
-				Labels            struct {
+				Labels struct {
 					App string `json:"app"`
 				} `json:"labels"`
 				Annotations struct {
