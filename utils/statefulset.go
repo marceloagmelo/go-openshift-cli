@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
+	"github.com/marceloagmelo/go-openshift-cli/model"
 )
 
 // GetStateFulSet recuperar StateFulSet

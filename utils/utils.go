@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/model"
+	"github.com/marceloagmelo/go-openshift-cli/model"
 )
 
-//var configfile = "/home/marcelo/go/src/gitlab.produbanbr.corp/paas-brasil/go-openshift-cli/conf/config.yaml"
+//var configfile = "/home/marcelo/go/src/github.com/marceloagmelo/go-openshift-cli/conf/config.yaml"
 var apiProjeto = "/apis/project.openshift.io/v1/projects/"
 var apiApps = "/apis/apps.openshift.io/v1/"
 var apiPods = "/api/v1/pods/"
