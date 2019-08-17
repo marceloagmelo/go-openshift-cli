@@ -11,7 +11,7 @@ import (
 // GetLimitRange recuperar LimitRange
 func GetLimitRange(token string, url string, projeto string, nome string) (resultado int, LimitRange model.LimitRange) {
 	resultado = 0
-	endpoint := url + apiV1 + "namespaces/" + projeto + "/LimitRanges/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/limitranges/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -37,7 +37,7 @@ func GetLimitRange(token string, url string, projeto string, nome string) (resul
 // GetLimitRangeString recuperar LimitRange
 func GetLimitRangeString(token string, url string, projeto string, nome string) (resultado int, LimitRangeString string) {
 	resultado = 0
-	endpoint := url + apiV1 + "namespaces/" + projeto + "/LimitRanges/" + nome
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/limitranges/" + nome
 
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
@@ -57,7 +57,7 @@ func GetLimitRangeString(token string, url string, projeto string, nome string) 
 // ListLimitRange listar todos LimitRanges
 func ListLimitRange(token string, url string) (resultado int, LimitRanges model.LimitRanges) {
 	resultado = 0
-	endpoint := url + apiV1 + "LimitRanges"
+	endpoint := url + apiV1 + "limitranges"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -82,7 +82,7 @@ func ListLimitRange(token string, url string) (resultado int, LimitRanges model.
 // ListLimitRangeString listar todos LimitRanges
 func ListLimitRangeString(token string, url string) (resultado int, LimitRangeString string) {
 	resultado = 0
-	endpoint := url + apiV1 + "LimitRanges"
+	endpoint := url + apiV1 + "limitranges"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -101,7 +101,7 @@ func ListLimitRangeString(token string, url string) (resultado int, LimitRangeSt
 // ListLimitRangeProjeto listar LimitRanges por projetos
 func ListLimitRangeProjeto(token string, url string, projeto string) (resultado int, LimitRange model.LimitRange) {
 	resultado = 0
-	endpoint := url + apiV1 + "namespaces/" + projeto + "/LimitRanges"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/limitranges"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -126,7 +126,7 @@ func ListLimitRangeProjeto(token string, url string, projeto string) (resultado 
 // ListLimitRangeProjetoString listar LimitRanges por projetos
 func ListLimitRangeProjetoString(token string, url string, projeto string) (resultado int, LimitRangeString string) {
 	resultado = 0
-	endpoint := url + apiV1 + "namespaces/" + projeto + "/LimitRanges"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/limitranges"
 	resultado, resposta := GetRequest(token, endpoint)
 	defer resposta.Body.Close()
 	if resposta.StatusCode == 200 {
@@ -145,7 +145,7 @@ func ListLimitRangeProjetoString(token string, url string, projeto string) (resu
 // CriarLimitRange criar um LimitRanges
 func CriarLimitRange(token string, url string, projeto string, conteudoJSON string) (resultado int, erro string) {
 	resultado = 0
-	endpoint := url + apiV1 + "namespaces/" + projeto + "/LimitRanges"
+	endpoint := url + apiV1 + "namespaces/" + projeto + "/limitranges"
 
 	cmd := "sed -i s/\\\"resourceVersion[^,]*,//g " + conteudoJSON
 	resultado, _ = ExecCmd(cmd)
